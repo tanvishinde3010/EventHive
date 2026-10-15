@@ -28,7 +28,7 @@ export default function LoginPage() {
   const [regSuccess, setRegSuccess] = useState("");
 
   /* ---- Login submit ---- */
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
     setLoginError("");
 
@@ -38,19 +38,17 @@ export default function LoginPage() {
     }
 
     setLoginLoading(true);
-    setTimeout(() => {
-      const result = login(loginEmail.trim(), loginPassword);
-      setLoginLoading(false);
-      if (!result.success) {
-        setLoginError(result.message);
-        return;
-      }
-      if (result.user.role === "ADMIN") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/student/dashboard");
-      }
-    }, 700);
+    const result = await login(loginEmail.trim(), loginPassword);
+    setLoginLoading(false);
+    if (!result.success) {
+      setLoginError(result.message);
+      return;
+    }
+    if (result.user.role === "ADMIN") {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/student/dashboard");
+    }
   }
 
   /* ---- Register submit ---- */
@@ -76,7 +74,7 @@ export default function LoginPage() {
     return errors;
   }
 
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault();
     setRegSuccess("");
     const errors = validateReg();
@@ -84,21 +82,19 @@ export default function LoginPage() {
     if (Object.keys(errors).length > 0) return;
 
     setRegLoading(true);
-    setTimeout(() => {
-      const result = register({
-        name: regData.name.trim(),
-        email: regData.email.trim(),
-        password: regData.password,
-        department: regData.department,
-        studentId: regData.studentId.trim()
-      });
-      setRegLoading(false);
-      if (!result.success) {
-        setRegErrors({ email: result.message });
-        return;
-      }
-      navigate("/student/dashboard");
-    }, 700);
+    const result = await register({
+      name: regData.name.trim(),
+      email: regData.email.trim(),
+      password: regData.password,
+      department: regData.department,
+      studentId: regData.studentId.trim()
+    });
+    setRegLoading(false);
+    if (!result.success) {
+      setRegErrors({ email: result.message });
+      return;
+    }
+    navigate("/student/dashboard");
   }
 
   function handleRegChange(field, value) {

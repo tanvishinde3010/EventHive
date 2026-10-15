@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { events, departments, categories } from "../data/eventsData";
+import { departments, categories } from "../data/eventsData";
+import { useAuth } from "../context/AuthContext";
 import EventCard from "../components/EventCard";
 import EventDetailsModal from "../components/EventDetailsModal";
 
 export default function EventsPage() {
+  const { events } = useAuth();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [department, setDepartment] = useState("All");

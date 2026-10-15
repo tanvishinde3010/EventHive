@@ -2,169 +2,112 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
 
-// Demo users (in a real app this would come from a backend)
-const DEMO_USERS = [
-  {
-    id: 1,
-    email: "student@kbtcoe.edu",
-    password: "student123",
-    name: "Tanvi Patil",
-    role: "STUDENT",
-    department: "COMP",
-    studentId: "COMP2024001"
-  },
-  {
-    id: 2,
-    email: "admin@kbtcoe.edu",
-    password: "admin123",
-    name: "Admin User",
-    role: "ADMIN",
-    department: null,
-    studentId: null
+// Small helper for calling the backend API (proxied to the Express server by Vite)
+async function api(path, method = "GET", body) {
+  try {
+    const res = await fetch("/api" + path, {
+      method,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const data = await res.json();
+    return res.ok ? { success: true, data } : { success: false, message: data.message };
+  } catch (err) {
+    console.error("API error:", err);
+    return { success: false, message: "Could not reach the server." };
   }
-];
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [events, setEvents] = useState([]);
   const [registrations, setRegistrations] = useState([]);
+  const [ready, setReady] = useState(false);
 
-  // Restore session from localStorage
+  async function loadEvents() {
+    const result = await api("/events");
+    if (result.success) setEvents(result.data);
+  }
+
+  async function loadRegistrations() {
+    const result = await api("/registrations/me");
+    setRegistrations(result.success ? result.data : []);
+  }
+
+  // Restore session from the server and load events
   useEffect(() => {
-    try {
-      const savedUser = localStorage.getItem("eh_user");
-      const savedRegs = localStorage.getItem("eh_registrations");
-      if (savedUser) setUser(JSON.parse(savedUser));
-      if (savedRegs) setRegistrations(JSON.parse(savedRegs));
-    } catch (err) {
-      console.error("Could not restore session:", err);
-    }
+    api("/events").then((result) => {
+      if (result.success) setEvents(result.data);
+    });
+    api("/auth/me").then((me) => {
+      if (me.success && me.data) {
+        setUser(me.data);
+        loadRegistrations();
+      }
+      setReady(true);
+    });
   }, []);
 
-  function login(email, password) {
-    const found = DEMO_USERS.find(
-      (u) => u.email === email && u.password === password
-    );
-    if (!found) {
-      return { success: false, message: "Invalid email or password." };
-    }
-    const { password: _, ...safeUser } = found;
-    setUser(safeUser);
-    try {
-      localStorage.setItem("eh_user", JSON.stringify(safeUser));
-    } catch (err) {
-      console.error("Could not save session:", err);
-    }
-    return { success: true, user: safeUser };
+  async function login(email, password) {
+    const result = await api("/auth/login", "POST", { email, password });
+    if (!result.success) return result;
+    setUser(result.data);
+    await loadRegistrations();
+    return { success: true, user: result.data };
   }
 
-  function logout() {
+  async function logout() {
+    await api("/auth/logout", "POST");
     setUser(null);
-    try {
-      localStorage.removeItem("eh_user");
-    } catch (err) {
-      console.error("Could not clear session:", err);
-    }
+    setRegistrations([]);
   }
 
-  function register(formData) {
-    const { email, name, password, department } = formData;
-
-    // Check duplicate email
-    if (DEMO_USERS.find((u) => u.email === email)) {
-      return {
-        success: false,
-        message: "An account with this email already exists."
-      };
-    }
-
-    const newUser = {
-      id: Date.now(),
-      email,
-      name,
-      role: "STUDENT",
-      department,
-      studentId: formData.studentId || null
-    };
-
-    // Add to demo users list (persists only in memory in this demo version)
-    DEMO_USERS.push({ ...newUser, password });
-
-    const { password: _, ...safeUser } = { ...newUser, password };
-    setUser(safeUser);
-    try {
-      localStorage.setItem("eh_user", JSON.stringify(safeUser));
-    } catch (err) {
-      console.error("Could not save session:", err);
-    }
-    return { success: true, user: safeUser };
+  async function register(formData) {
+    const result = await api("/auth/register", "POST", formData);
+    if (!result.success) return result;
+    setUser(result.data);
+    setRegistrations([]);
+    return { success: true, user: result.data };
   }
 
-  function registerForEvent(eventId, eventName) {
+  async function registerForEvent(eventId) {
     if (!user) return { success: false, message: "Please log in first." };
-    if (user.role === "ADMIN")
-      return { success: false, message: "Admins cannot register for events." };
-
-    const already = registrations.find(
-      (r) => r.eventId === eventId && r.userId === user.id && r.status !== "CANCELLED"
-    );
-    if (already) {
-      return { success: false, message: "You are already registered for this event." };
-    }
-
-    const newReg = {
-      id: Date.now(),
-      userId: user.id,
-      eventId,
-      eventName,
-      status: "CONFIRMED",
-      registeredAt: new Date().toISOString()
-    };
-
-    const updated = [...registrations, newReg];
-    setRegistrations(updated);
-    try {
-      localStorage.setItem("eh_registrations", JSON.stringify(updated));
-    } catch (err) {
-      console.error("Could not save registration:", err);
-    }
-    return { success: true, registration: newReg };
+    const result = await api("/registrations", "POST", { eventId });
+    if (result.success) await loadRegistrations();
+    return result;
   }
 
-  function cancelRegistration(regId) {
-    const updated = registrations.map((r) =>
-      r.id === regId ? { ...r, status: "CANCELLED", cancelledAt: new Date().toISOString() } : r
-    );
-    setRegistrations(updated);
-    try {
-      localStorage.setItem("eh_registrations", JSON.stringify(updated));
-    } catch (err) {
-      console.error("Could not update registration:", err);
-    }
-    return { success: true };
+  async function cancelRegistration(regId) {
+    const result = await api(`/registrations/${regId}`, "DELETE");
+    if (result.success) await loadRegistrations();
+    return result;
   }
 
-  function getMyRegistrations() {
-    if (!user) return [];
-    return registrations.filter((r) => r.userId === user.id);
+  async function deleteEvent(eventId) {
+    const result = await api(`/events/${eventId}`, "DELETE");
+    if (result.success) await loadEvents();
+    return result;
   }
 
   function isRegistered(eventId) {
-    if (!user) return false;
-    return registrations.some(
-      (r) => r.eventId === eventId && r.userId === user.id && r.status !== "CANCELLED"
-    );
+    return registrations.some((r) => r.eventId === eventId && r.status === "CONFIRMED");
   }
+
+  // Wait until we know whether the user is logged in before rendering routes
+  if (!ready) return null;
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        events,
+        registrations,
         login,
         logout,
         register,
         registerForEvent,
         cancelRegistration,
-        getMyRegistrations,
+        deleteEvent,
         isRegistered
       }}
     >
