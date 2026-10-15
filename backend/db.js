@@ -58,7 +58,7 @@ if (db.prepare("SELECT COUNT(*) AS n FROM users").get().n === 0) {
   const addUser = db.prepare(
     "INSERT INTO users (name, email, password, role, department, studentId) VALUES (?, ?, ?, ?, ?, ?)"
   );
-  addUser.run("Tanvi Patil", "student@kbtcoe.edu", hashPassword("student123"), "STUDENT", "COMP", "COMP2024001");
+  addUser.run("Tanvi Shinde", "student@kbtcoe.edu", hashPassword("student123"), "STUDENT", "COMP", "COMP2024001");
   addUser.run("Admin User", "admin@kbtcoe.edu", hashPassword("admin123"), "ADMIN", null, null);
 
   const addEvent = db.prepare(`
