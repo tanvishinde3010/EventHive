@@ -19,16 +19,14 @@ export default function EventCard({ event, onViewDetails, compact = false }) {
     if (registered) return;
 
     setLoading(true);
-    const result = registerForEvent(event.id, event.name);
-    setTimeout(() => {
-      setLoading(false);
-      if (result.success) {
-        setMessage({ type: "success", text: "Registered successfully!" });
-      } else {
-        setMessage({ type: "error", text: result.message });
-      }
-      setTimeout(() => setMessage(null), 3000);
-    }, 600);
+    const result = await registerForEvent(event.id);
+    setLoading(false);
+    if (result.success) {
+      setMessage({ type: "success", text: "Registered successfully!" });
+    } else {
+      setMessage({ type: "error", text: result.message });
+    }
+    setTimeout(() => setMessage(null), 3000);
   }
 
   return (

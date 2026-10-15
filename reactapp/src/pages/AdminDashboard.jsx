@@ -1,15 +1,20 @@
 import { useState } from "react";
-import { events, departments, categories } from "../data/eventsData";
+import { departments, categories } from "../data/eventsData";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, events, deleteEvent } = useAuth();
   const [tab, setTab] = useState("overview"); // overview | events | departments
 
-  // Simulated admin stats (in real app these come from API)
   const totalEvents = events.length;
   const publishedEvents = events.filter((e) => e.status === "PUBLISHED").length;
+
+  async function handleDelete(ev) {
+    if (!window.confirm(`Delete "${ev.name}"?`)) return;
+    const result = await deleteEvent(ev.id);
+    if (!result.success) alert(result.message);
+  }
 
   const tabStyle = (t) => ({
     padding: "10px 22px",
@@ -119,17 +124,6 @@ export default function AdminDashboard() {
             <h3 className="dashboard-section-title" style={{ margin: 0 }}>
               📅 All Events ({events.length})
             </h3>
-            <div
-              style={{
-                background: "#FFE1D5",
-                borderRadius: "12px",
-                padding: "12px 18px",
-                fontSize: "13px",
-                color: "#29443F"
-              }}
-            >
-              ℹ️ In the full backend version, you can create, edit, publish and cancel events here.
-            </div>
           </div>
           <div style={{ overflowX: "auto" }}>
             <table className="registrations-table">
@@ -144,6 +138,7 @@ export default function AdminDashboard() {
                   <th>Capacity</th>
                   <th>Deadline</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -159,6 +154,15 @@ export default function AdminDashboard() {
                     <td>{ev.registrationDeadline}</td>
                     <td>
                       <span className="badge badge-green">{ev.status}</span>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-outline"
+                        style={{ padding: "6px 12px", fontSize: "12px" }}
+                        onClick={() => handleDelete(ev)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -216,26 +220,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
-
-      {/* Notice */}
-      <div
-        style={{
-          marginTop: "40px",
-          background: "#FFF9F2",
-          border: "2px solid #F0E4D7",
-          borderRadius: "16px",
-          padding: "20px 24px",
-          fontSize: "14px",
-          color: "#687A76",
-          lineHeight: "1.7"
-        }}
-      >
-        <strong style={{ color: "#29443F" }}>📌 Frontend Demo Note:</strong> This admin dashboard
-        currently displays read-only event data from the local data file. In the full-stack version
-        (Phase 2 with Node.js + MySQL backend), admins can create, edit, publish, cancel events,
-        view student registrations, export CSV, and manage student accounts via REST APIs.
-        Connect a backend by implementing the API endpoints defined in the PRD.
-      </div>
 
       <div style={{ marginTop: "24px", display: "flex", gap: "14px", flexWrap: "wrap" }}>
         <Link to="/" className="btn btn-sm btn-outline">

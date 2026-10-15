@@ -1,10 +1,8 @@
 import { useAuth } from "../context/AuthContext";
-import { events } from "../data/eventsData";
 import { Link } from "react-router-dom";
 
 export default function StudentDashboard() {
-  const { user, getMyRegistrations, cancelRegistration } = useAuth();
-  const myRegs = getMyRegistrations();
+  const { user, events, registrations: myRegs, cancelRegistration } = useAuth();
 
   const confirmed = myRegs.filter((r) => r.status === "CONFIRMED");
   const cancelled = myRegs.filter((r) => r.status === "CANCELLED");
@@ -13,9 +11,10 @@ export default function StudentDashboard() {
     return events.find((e) => e.id === eventId);
   }
 
-  function handleCancel(regId) {
+  async function handleCancel(regId) {
     if (window.confirm("Are you sure you want to cancel this registration?")) {
-      cancelRegistration(regId);
+      const result = await cancelRegistration(regId);
+      if (!result.success) alert(result.message);
     }
   }
 

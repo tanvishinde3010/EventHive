@@ -2,7 +2,8 @@ import { useState } from "react";
 import Hero from "../components/Hero";
 import EventCard from "../components/EventCard";
 import EventDetailsModal from "../components/EventDetailsModal";
-import { events, departments } from "../data/eventsData";
+import { departments } from "../data/eventsData";
+import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 const FEATURED_IDS = [1, 2, 3, 9]; // AI Hackathon, Web Dev Workshop, Sports Day, Cultural Fest
@@ -15,6 +16,7 @@ const features = [
 ];
 
 export default function HomePage() {
+  const { events } = useAuth();
   const [selectedEvent, setSelectedEvent] = useState(null);
   const featured = events.filter((e) => FEATURED_IDS.includes(e.id));
 

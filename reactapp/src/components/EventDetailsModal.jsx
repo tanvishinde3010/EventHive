@@ -12,22 +12,20 @@ export default function EventDetailsModal({ event, onClose }) {
 
   const registered = isRegistered(event.id);
 
-  function handleRegister() {
+  async function handleRegister() {
     if (!user) {
       onClose();
       navigate("/login");
       return;
     }
     setLoading(true);
-    const result = registerForEvent(event.id, event.name);
-    setTimeout(() => {
-      setLoading(false);
-      if (result.success) {
-        setMessage({ type: "success", text: "🎉 Registered successfully!" });
-      } else {
-        setMessage({ type: "error", text: result.message });
-      }
-    }, 600);
+    const result = await registerForEvent(event.id);
+    setLoading(false);
+    if (result.success) {
+      setMessage({ type: "success", text: "🎉 Registered successfully!" });
+    } else {
+      setMessage({ type: "error", text: result.message });
+    }
   }
 
   return (

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { departments, events } from "../data/eventsData";
+import { departments } from "../data/eventsData";
+import { useAuth } from "../context/AuthContext";
 import EventCard from "../components/EventCard";
 import EventDetailsModal from "../components/EventDetailsModal";
 
 export default function DepartmentsPage() {
+  const { events } = useAuth();
   const [activeDept, setActiveDept] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();
