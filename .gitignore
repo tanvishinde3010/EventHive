@@ -1,2 +1,4 @@
-reactapp/node_modules/
-reactapp/dist/
+node_modules/
+backend/node_modules/
+*.log
+.DS_Store

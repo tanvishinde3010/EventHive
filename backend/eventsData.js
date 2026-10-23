@@ -1,4 +1,4 @@
-// ---------- EVENTS DATA ----------
+// Default events and departments seed data for EventHive
 
 export const departments = [
   {
@@ -39,19 +39,8 @@ export const departments = [
   }
 ];
 
-export const categories = [
-  "Technical",
-  "Workshop",
-  "Sports",
-  "Cultural",
-  "Seminar",
-  "Competition",
-  "Exhibition"
-];
-
 export const events = [
   {
-    id: 1,
     name: "AI Hackathon",
     department: "AI & DS",
     category: "Technical",
@@ -61,14 +50,12 @@ export const events = [
     capacity: 80,
     registrationDeadline: "12 October 2026",
     coordinator: "Prof. Meera Shah",
-    description:
-      "A full-day technical hackathon where teams of 2–4 students build innovative AI-based solutions to real-world problems. Prizes worth ₹25,000 up for grabs!",
+    description: "A full-day technical hackathon where teams of 2–4 students build innovative AI-based solutions to real-world problems. Prizes worth ₹25,000 up for grabs!",
     eligibility: "Open to all students with basic Python knowledge.",
     image: "/images/hackathon.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 2,
     name: "Web Development Workshop",
     department: "COMP",
     category: "Workshop",
@@ -78,14 +65,12 @@ export const events = [
     capacity: 50,
     registrationDeadline: "18 October 2026",
     coordinator: "Prof. Rajesh Kumar",
-    description:
-      "Learn modern web development concepts: HTML5, CSS3, and JavaScript. Build a responsive website from scratch during this hands-on workshop.",
+    description: "Learn modern web development concepts: HTML5, CSS3, and JavaScript. Build a responsive website from scratch during this hands-on workshop.",
     eligibility: "Open to FY and SY students.",
     image: "/images/workshop.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 3,
     name: "Annual Sports Day",
     department: "ALL",
     category: "Sports",
@@ -95,31 +80,27 @@ export const events = [
     capacity: 300,
     registrationDeadline: "22 October 2026",
     coordinator: "Mr. Suresh Patil",
-    description:
-      "An exciting sports event featuring cricket, football, badminton, athletics, and indoor games. Represent your department and compete for the Sports Trophy!",
+    description: "An exciting sports event featuring cricket, football, badminton, athletics, and indoor games. Represent your department and compete for the Sports Trophy!",
     eligibility: "Open to all students.",
     image: "/images/sports.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 4,
     name: "Coding Competition",
     department: "COMP",
-    category: "Competition",
+    category: "Technical",
     date: "28 October 2026",
     time: "10:00 AM – 1:00 PM",
     venue: "Computer Lab 2",
     capacity: 60,
     registrationDeadline: "25 October 2026",
     coordinator: "Prof. Anita Desai",
-    description:
-      "Test your programming and problem-solving skills through challenging coding problems across multiple rounds. Languages: C, C++, Java, Python.",
+    description: "Test your programming and problem-solving skills through challenging coding problems across multiple rounds. Languages: C, C++, Java, Python.",
     eligibility: "Open to all years. Individual participation.",
     image: "/images/hackathon.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 5,
     name: "Tech Talk on Generative AI",
     department: "AI & DS",
     category: "Seminar",
@@ -129,14 +110,12 @@ export const events = [
     capacity: 200,
     registrationDeadline: "31 October 2026",
     coordinator: "Prof. Neha Joshi",
-    description:
-      "An interactive expert session on Generative AI, covering LLMs, prompt engineering, and its applications in industry. Guest speaker from a leading tech company.",
+    description: "An interactive expert session on Generative AI, covering LLMs, prompt engineering, and its applications in industry. Guest speaker from a leading tech company.",
     eligibility: "Open to all students and faculty.",
     image: "/images/workshop.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 6,
     name: "Robotics Workshop",
     department: "ENTC",
     category: "Workshop",
@@ -146,14 +125,12 @@ export const events = [
     capacity: 40,
     registrationDeadline: "2 November 2026",
     coordinator: "Prof. Vikram Nair",
-    description:
-      "Hands-on workshop covering Arduino programming, sensor integration, and building a basic line-following robot. All components provided.",
+    description: "Hands-on workshop covering Arduino programming, sensor integration, and building a basic line-following robot. All components provided.",
     eligibility: "Open to ENTC and COMP students.",
     image: "/images/workshop.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 7,
     name: "CAD Design Competition",
     department: "MECH",
     category: "Competition",
@@ -163,14 +140,12 @@ export const events = [
     capacity: 35,
     registrationDeadline: "5 November 2026",
     coordinator: "Prof. Amit Kulkarni",
-    description:
-      "Showcase your creativity and technical skills through computer-aided design using SolidWorks. Design a mechanical component based on a given problem statement.",
+    description: "Showcase your creativity and technical skills through computer-aided design using SolidWorks. Design a mechanical component based on a given problem statement.",
     eligibility: "Open to Mechanical Engineering students.",
     image: "/images/hackathon.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 8,
     name: "Smart City Project Exhibition",
     department: "CIVIL",
     category: "Exhibition",
@@ -180,14 +155,12 @@ export const events = [
     capacity: 150,
     registrationDeadline: "9 November 2026",
     coordinator: "Prof. Priya Sharma",
-    description:
-      "Students present innovative ideas and working models for future smart cities — covering infrastructure, water management, traffic control, and green energy.",
+    description: "Students present innovative ideas and working models for future smart cities — covering infrastructure, water management, traffic control, and green energy.",
     eligibility: "Team of 2–3 Civil Engineering students.",
     image: "/images/college.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 9,
     name: "Cultural Fest",
     department: "ALL",
     category: "Cultural",
@@ -197,14 +170,12 @@ export const events = [
     capacity: 500,
     registrationDeadline: "14 November 2026",
     coordinator: "Cultural Committee",
-    description:
-      "A grand celebration of music, dance, drama, and art by students across all departments. Performances, competitions, and cultural displays make this the biggest event of the year!",
+    description: "A grand celebration of music, dance, drama, and art by students across all departments. Performances, competitions, and cultural displays make this the biggest event of the year!",
     eligibility: "Open to all students.",
     image: "/images/cultural.jpeg",
     status: "PUBLISHED"
   },
   {
-    id: 10,
     name: "Career Guidance Seminar",
     department: "ALL",
     category: "Seminar",
@@ -214,8 +185,7 @@ export const events = [
     capacity: 200,
     registrationDeadline: "20 November 2026",
     coordinator: "Training & Placement Cell",
-    description:
-      "A career guidance session covering placements, higher studies, GRE/GATE preparation, and industry opportunities. Panel of alumni and industry experts.",
+    description: "A career guidance session covering placements, higher studies, GRE/GATE preparation, and industry opportunities. Panel of alumni and industry experts.",
     eligibility: "Open to TY and Final Year students.",
     image: "/images/college.jpeg",
     status: "PUBLISHED"

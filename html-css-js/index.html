@@ -4,26 +4,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>College Event Management System</title>
-
+    <title>EventHive - College Event Management System</title>
     <link rel="stylesheet" href="style.css">
-
     <style>
         .about-list {
             margin: 12px 0 0 20px;
             line-height: 1.8;
+        }
+
+        /* Registrations Table Modal Styles */
+        .registrations-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: rgba(32, 54, 51, 0.75);
+            z-index: 3000;
+        }
+
+        .registrations-box {
+            position: relative;
+            width: 850px;
+            max-width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 30px;
+            border-radius: 20px;
+            background-color: white;
+            box-shadow: 0 20px 50px rgba(32, 54, 51, 0.3);
+            animation: modalAppear 0.25s ease;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .reg-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .reg-table th {
+            background-color: #29443F;
+            color: white;
+            padding: 12px 10px;
+            font-weight: 600;
+        }
+
+        .reg-table td {
+            padding: 10px;
+            border-bottom: 1px solid #E4DDD6;
+            color: #29443F;
+        }
+
+        .reg-table tr:hover {
+            background-color: #FFF4EC;
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #E2F4EC;
+            color: #176B46;
+        }
+
+        .nav-reg-btn {
+            background-color: #29443F;
+            color: white !important;
+            padding: 9px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .nav-reg-btn:hover {
+            background-color: #1B2E2A;
+            transform: translateY(-2px);
+        }
+
+        .demo-creds {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #FFF4EC;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #687A76;
+            line-height: 1.5;
         }
     </style>
 </head>
 
 <body>
 
-   
+    <!-- ================================================================= -->
+    <!-- 1. NAVIGATION BAR -->
+    <!-- ================================================================= -->
     <header>
         <nav>
             <div class="logo">
-                🎓 College Events
+                🎓 EventHive
             </div>
 
             <div class="nav-links">
@@ -32,516 +123,323 @@
                 <a href="#departments">Departments</a>
                 <a href="#about">About</a>
                 <a href="#contact">Contact</a>
-                <a
-                    href="#"
-                    id="loginNav"
-                    class="nav-auth-button"
-                    onclick="openLogin(); return false;"
-                >
-                    Login
-                </a>
-                <a
-                    href="#"
-                    id="logoutNav"
-                    class="nav-auth-button"
-                    onclick="logoutUser(); return false;"
-                    style="display: none;"
-                >
-                    Logout
-                </a>
+                <a href="#" class="nav-reg-btn" onclick="openRegistrationsModal(); return false;">📋 Registrations</a>
+                <a href="#" id="loginNav" class="nav-auth-button" onclick="openLogin(); return false;">Login</a>
+                <a href="#" id="logoutNav" class="nav-auth-button" onclick="logoutUser(); return false;" style="display: none;">Logout</a>
             </div>
         </nav>
     </header>
 
-
-    
     <main>
 
+        <!-- ============================================================= -->
+        <!-- 2. HERO SECTION -->
+        <!-- ============================================================= -->
         <section id="home" class="hero">
-
             <div class="hero-content">
-
-                <p class="welcome">WELCOME TO  KBTCOE</p>
-
-                <h1>
-                    College Event
-                    <span>Management System</span>
-                </h1>
-
+                <p class="welcome">WELCOME TO KBTCOE</p>
+                <h1>College Event <span>Management System</span></h1>
                 <p>
-                    Discover, register and participate in
-                    exciting events happening across our college.
+                    Discover, register, and participate in technical, cultural, and sports events happening across our college.
                 </p>
-
                 <button onclick="scrollToEvents()" class="main-btn">
                     Explore Events
                 </button>
-
             </div>
 
             <div class="hero-image">
-                <img src="../images/hero.jpeg"
-                     alt="College students participating in an event">
+                <img src="/images/hero.jpeg" onerror="this.onerror=null; this.src='../images/hero.jpeg'" alt="College students participating in an event">
             </div>
-
         </section>
 
-
-        
+        <!-- ============================================================= -->
+        <!-- 3. UPCOMING EVENTS SECTION (Search & Filter) -->
+        <!-- ============================================================= -->
         <section id="events" class="events-section">
-
             <div class="section-heading">
                 <p>WHAT'S HAPPENING</p>
                 <h2>Upcoming Events</h2>
-                <p>
-                    Find events by name, department or category.
-                </p>
+                <p>Find events by name, department, or category.</p>
             </div>
 
-           
             <div class="event-filters">
-
                 <div class="search-box">
-
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="🔍 Search events..."
-                        oninput="searchEvents()"
-                    >
-
+                    <input type="text" id="searchInput" placeholder="🔍 Search events..." oninput="searchEvents()">
                 </div>
 
                 <div class="category-box">
-
-                    <select
-                        id="categoryFilter"
-                        onchange="filterByCategory()"
-                    >
-
+                    <select id="categoryFilter" onchange="filterByCategory()">
                         <option value="All">All Categories</option>
-
                         <option value="Technical">Technical</option>
-
                         <option value="Workshop">Workshop</option>
-
                         <option value="Seminar">Seminar</option>
-
                         <option value="Sports">Sports</option>
-
                         <option value="Competition">Competition</option>
-
                         <option value="Exhibition">Exhibition</option>
-
                         <option value="Cultural">Cultural</option>
-
                     </select>
-
                 </div>
-
             </div>
 
+            <!-- Event Cards injected here via script.js -->
             <div id="eventContainer" class="event-container">
-
-                
-
+                <p style="text-align: center; grid-column: 1/-1;">Loading events from database...</p>
             </div>
-
         </section>
 
-
-        
+        <!-- ============================================================= -->
+        <!-- 4. DEPARTMENTS SECTION -->
+        <!-- ============================================================= -->
         <section id="departments" class="department-section">
-
             <div class="section-heading">
                 <p>EXPLORE</p>
                 <h2>Events By Department</h2>
-
-                <p>
-                    Explore events organized by different
-                    departments of our college.
-                </p>
+                <p>Explore events organized by different departments of our college.</p>
             </div>
 
-            <div id="departmentContainer" class="department-container">
-
-                
-
-            </div>
-
+            <!-- Department Cards injected here via script.js -->
+            <div id="departmentContainer" class="department-container"></div>
         </section>
 
-
-        
+        <!-- ============================================================= -->
+        <!-- 5. ABOUT SECTION -->
+        <!-- ============================================================= -->
         <section id="about" class="about-section">
-
             <div class="about-image">
-                <img src="../images/college.jpeg"
-                     alt="College building">
+                <img src="/images/college.jpeg" onerror="this.onerror=null; this.src='../images/college.jpeg'" alt="College building">
             </div>
 
             <div class="about-content">
-
                 <p>ABOUT OUR COLLEGE</p>
-
                 <h2>Learn. Participate. Grow.</h2>
-
                 <p>
-                    Our autonomous college provides students
-                    with opportunities to participate in
-                    technical, cultural, sports and academic
-                    activities throughout the year.
+                    Our college provides students with opportunities to participate in technical, cultural, sports, and academic activities throughout the year.
                 </p>
-
                 <p>
-                    This platform makes it easier for students
-                    to discover events, register for them and
-                    participate in activities organized by
-                    different departments.
+                    This platform makes it easier for students to discover events, register online in seconds, and track their participation.
                 </p>
-
                 <ul class="about-list">
-                    <li>Browse events from every department</li>
-                    <li>Register online in a few clicks</li>
-                    <li>Track your registrations in one place</li>
+                    <li>Browse events from every academic department</li>
+                    <li>Instant online registration with duplicate check</li>
+                    <li>Centralized SQLite database records</li>
                 </ul>
-
             </div>
-
         </section>
 
-
-        
+        <!-- ============================================================= -->
+        <!-- 6. FEATURES SECTION -->
+        <!-- ============================================================= -->
         <section class="features-section">
-
             <div class="section-heading">
                 <p>WHY USE OUR SYSTEM?</p>
                 <h2>Everything About College Events in One Place</h2>
             </div>
 
             <div class="features-container">
-
                 <div class="feature-card">
                     <div>🔎</div>
                     <h3>Easy Event Discovery</h3>
-                    <p>
-                        Find upcoming college events easily.
-                    </p>
+                    <p>Find upcoming college events easily using live keyword search and category filters.</p>
                 </div>
 
                 <div class="feature-card">
                     <div>🏢</div>
                     <h3>Department Wise</h3>
-                    <p>
-                        Explore events organized by departments.
-                    </p>
+                    <p>Explore events organized specifically by COMP, IT, AI & DS, CIVIL, MECH, and ENTC.</p>
                 </div>
 
                 <div class="feature-card">
                     <div>📝</div>
-                    <h3>Easy Registration</h3>
-                    <p>
-                        Register for events quickly.
-                    </p>
+                    <h3>Instant Registration</h3>
+                    <p>Register for any event directly from the browser into the SQLite database.</p>
                 </div>
 
                 <div class="feature-card">
                     <div>📅</div>
-                    <h3>Event Information</h3>
-                    <p>
-                        Get complete event details in one place.
-                    </p>
+                    <h3>Full Event Details</h3>
+                    <p>Get complete details regarding venue, date, time, coordinator, and eligibility.</p>
                 </div>
-
             </div>
-
         </section>
 
-
-        
+        <!-- ============================================================= -->
+        <!-- 7. CONTACT SECTION -->
+        <!-- ============================================================= -->
         <section id="contact" class="contact-section">
-
             <h2>Have an Event to Organize?</h2>
-
-            <p>
-                Connect with the event management team
-                for organizing college events.
-            </p>
-
-            <button onclick="showLogin()" class="main-btn">
-                Get Started
+            <p>Connect with the college event committee for hosting workshops, competitions, and seminars.</p>
+            <button onclick="scrollToEvents()" class="main-btn">
+                Browse Events
             </button>
-
         </section>
 
     </main>
 
-
-    
+    <!-- ================================================================= -->
+    <!-- 8. FOOTER -->
+    <!-- ================================================================= -->
     <footer>
-
-        <h3>🎓 College Event Management System</h3>
-
-        <p>
-            Connecting students with college events.
-        </p>
-
-        <p>
-            © 2026 College Event Management System
-        </p>
-
+        <h3>🎓 EventHive - College Event Management System</h3>
+        <p>Connecting students with campus events.</p>
+        <p>© 2026 KBTCOE College Event Management System | Built with HTML, CSS, JS & Node.js/SQLite</p>
     </footer>
 
-
-    
-    <div
-        id="loginModal"
-        class="login-modal"
-        aria-hidden="true"
-        onclick="closeLogin()"
-    >
-
-        <div
-            class="login-box"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="loginTitle"
-            onclick="event.stopPropagation()"
-        >
-
-            <button
-                onclick="closeLogin()"
-                class="login-close-btn"
-                aria-label="Close login form"
-            >
-                ×
-            </button>
-
+    <!-- ================================================================= -->
+    <!-- MODAL 1: LOGIN MODAL -->
+    <!-- ================================================================= -->
+    <div id="loginModal" class="login-modal" aria-hidden="true" onclick="closeLogin()">
+        <div class="login-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle" onclick="event.stopPropagation()">
+            <button onclick="closeLogin()" class="login-close-btn" aria-label="Close login form">×</button>
             <div class="login-heading">
-
                 <p>WELCOME BACK</p>
-
                 <h2 id="loginTitle">Login to EventHive</h2>
-
-                <span>
-                    Login to manage your event registrations.
-                </span>
-
+                <span>Login to manage event registrations.</span>
             </div>
 
             <form id="loginForm">
-
                 <div class="form-group">
-
                     <label for="loginEmail">Email Address</label>
-
-                    <input
-                        type="email"
-                        id="loginEmail"
-                        placeholder="Enter your email"
-                    >
-
+                    <input type="email" id="loginEmail" placeholder="e.g. student@kbtcoe.edu" required>
                 </div>
 
                 <div class="form-group">
-
                     <label for="loginPassword">Password</label>
-
-                    <input
-                        type="password"
-                        id="loginPassword"
-                        placeholder="Enter your password"
-                    >
-
+                    <input type="password" id="loginPassword" placeholder="Enter password" required>
                 </div>
 
-                <button
-                    type="submit"
-                    class="main-btn login-submit"
-                >
-                    Login
-                </button>
+                <button type="submit" class="main-btn login-submit">Login</button>
+                <p id="loginMessage" aria-live="polite" style="margin-top: 10px; font-weight: bold;"></p>
 
-                <p id="loginMessage" aria-live="polite"></p>
-
+                <div class="demo-creds">
+                    <strong>Demo Credentials:</strong><br>
+                    Student: <code>student@kbtcoe.edu</code> / <code>student123</code><br>
+                    Admin: <code>admin@kbtcoe.edu</code> / <code>admin123</code>
+                </div>
             </form>
-
         </div>
-
     </div>
 
-    
-    <div
-        id="eventDetailsModal"
-        class="modal event-details-modal"
-        aria-hidden="true"
-        onclick="closeEventDetails()"
-    >
-
-        <div
-            class="event-details-box"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="detailsName"
-            onclick="event.stopPropagation()"
-        >
-
-            <button
-                onclick="closeEventDetails()"
-                class="event-close-btn"
-                aria-label="Close event details"
-            >
-                ×
-            </button>
-
-            <img
-                id="detailsImage"
-                src=""
-                alt="Event image"
-            >
+    <!-- ================================================================= -->
+    <!-- MODAL 2: EVENT DETAILS MODAL -->
+    <!-- ================================================================= -->
+    <div id="eventDetailsModal" class="modal event-details-modal" aria-hidden="true" onclick="closeEventDetails()">
+        <div class="event-details-box" role="dialog" aria-modal="true" aria-labelledby="detailsName" onclick="event.stopPropagation()">
+            <button onclick="closeEventDetails()" class="event-close-btn" aria-label="Close event details">×</button>
+            <img id="detailsImage" src="" alt="Event image" onerror="this.onerror=null; this.src='../images/workshop.jpeg'">
 
             <div class="event-details-content">
-
                 <p id="detailsCategory" class="details-category"></p>
-
                 <h2 id="detailsName"></h2>
-
                 <p id="detailsDepartment"></p>
-
                 <p id="detailsDate"></p>
-
                 <p id="detailsTime"></p>
-
                 <p id="detailsVenue"></p>
-
+                <p id="detailsCoordinator" style="font-weight: 600;"></p>
                 <p id="detailsDescription"></p>
 
-                <button
-                    id="detailsRegisterBtn"
-                    class="main-btn"
-                >
-                    Register
+                <button id="detailsRegisterBtn" class="main-btn" style="margin-top: 15px;">
+                    Register Now
                 </button>
-
             </div>
         </div>
-
     </div>
 
-    
-    <div
-        id="registrationModal"
-        class="registration-modal"
-        aria-hidden="true"
-        onclick="closeRegistration()"
-    >
-
-        <div
-            class="registration-box"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="registrationTitle"
-            onclick="event.stopPropagation()"
-        >
-
-            <button
-                onclick="closeRegistration()"
-                class="registration-close-btn"
-                aria-label="Close registration form"
-            >
-                ×
-            </button>
-
+    <!-- ================================================================= -->
+    <!-- MODAL 3: REGISTRATION MODAL -->
+    <!-- ================================================================= -->
+    <div id="registrationModal" class="registration-modal" aria-hidden="true" onclick="closeRegistration()">
+        <div class="registration-box" role="dialog" aria-modal="true" aria-labelledby="registrationTitle" onclick="event.stopPropagation()">
+            <button onclick="closeRegistration()" class="registration-close-btn" aria-label="Close registration form">×</button>
             <div class="registration-heading">
-
                 <p>EVENT REGISTRATION</p>
-
                 <h2 id="registrationTitle">Register for Event</h2>
-
             </div>
 
             <div class="selected-event">
-
                 <span>Registering for:</span>
-
                 <h3 id="registrationEventName">Event Name</h3>
-
             </div>
 
             <form id="registrationForm">
-
                 <div class="form-group">
-
-                    <label for="studentName">Full Name</label>
-
-                    <input
-                        type="text"
-                        id="studentName"
-                        placeholder="Enter your full name"
-                    >
-
+                    <label for="studentName">Full Name *</label>
+                    <input type="text" id="studentName" placeholder="Enter your full name" required>
                 </div>
 
                 <div class="form-group">
-
-                    <label for="studentEmail">Email Address</label>
-
-                    <input
-                        type="email"
-                        id="studentEmail"
-                        placeholder="Enter your email"
-                    >
-
+                    <label for="studentEmail">College Email Address *</label>
+                    <input type="email" id="studentEmail" placeholder="e.g. yourname@kbtcoe.edu" required>
                 </div>
 
                 <div class="form-group">
-
-                    <label for="studentPhone">Phone Number</label>
-
-                    <input
-                        type="tel"
-                        id="studentPhone"
-                        placeholder="Enter your phone number"
-                    >
-
+                    <label for="studentPhone">Phone Number *</label>
+                    <input type="tel" id="studentPhone" placeholder="10-digit mobile number" required>
                 </div>
 
                 <div class="form-group">
-
-                    <label for="studentDepartment">Department</label>
-
-                    <select id="studentDepartment">
-
+                    <label for="studentDepartment">Department *</label>
+                    <select id="studentDepartment" required>
                         <option value="">Select Department</option>
-                        <option value="COMP">Computer Engineering</option>
-                        <option value="IT">Information Technology</option>
-                        <option value="AI & DS">AI &amp; DS</option>
-                        <option value="CIVIL">Civil Engineering</option>
-                        <option value="MECH">Mechanical Engineering</option>
-                        <option value="ENTC">ENTC</option>
-
+                        <option value="COMP">Computer Engineering (COMP)</option>
+                        <option value="IT">Information Technology (IT)</option>
+                        <option value="AI & DS">AI &amp; Data Science (AI &amp; DS)</option>
+                        <option value="CIVIL">Civil Engineering (CIVIL)</option>
+                        <option value="MECH">Mechanical Engineering (MECH)</option>
+                        <option value="ENTC">Electronics &amp; Telecomm (ENTC)</option>
                     </select>
-
                 </div>
 
-                <button
-                    type="submit"
-                    class="main-btn registration-submit"
-                >
+                <button type="submit" class="main-btn registration-submit">
                     Submit Registration
                 </button>
-
-                <p id="registrationMessage" aria-live="polite"></p>
-
+                <p id="registrationMessage" aria-live="polite" style="margin-top: 12px; font-weight: bold;"></p>
             </form>
-
         </div>
-
     </div>
 
+    <!-- ================================================================= -->
+    <!-- MODAL 4: VIEW REGISTRATIONS MODAL (For Viva Examination Demo) -->
+    <!-- ================================================================= -->
+    <div id="registrationsModal" class="registrations-modal" aria-hidden="true" onclick="closeRegistrationsModal()">
+        <div class="registrations-box" role="dialog" aria-modal="true" aria-labelledby="regModalTitle" onclick="event.stopPropagation()">
+            <button onclick="closeRegistrationsModal()" class="registration-close-btn" aria-label="Close registrations modal">×</button>
+            <div class="registration-heading" style="text-align: left;">
+                <p>DATABASE RECORDS</p>
+                <h2 id="regModalTitle">Live Event Registrations</h2>
+                <span style="font-size: 13px; color: #687A76;">
+                    Fetched dynamically via <code>GET /api/registrations</code> from SQLite database (<code>eventhive.db</code>)
+                </span>
+            </div>
 
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                <button onclick="loadRegistrationsTable()" class="main-btn" style="padding: 6px 14px; font-size: 13px;">🔄 Refresh List</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="reg-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Dept</th>
+                            <th>Event Name</th>
+                            <th>Date Registered</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrationsTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 20px;">Loading registrations...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Client-side JavaScript -->
     <script src="script.js"></script>
-
 </body>
 
 </html>

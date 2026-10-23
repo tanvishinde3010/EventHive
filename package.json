@@ -1,0 +1,12 @@
+{
+  "name": "college-event-management-system",
+  "version": "1.0.0",
+  "description": "College Event Management System - Simple HTML, CSS, JS frontend + Node.js/Express + SQLite backend",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js"
+  },
+  "author": "Tanvi Shinde",
+  "license": "ISC"
+}
